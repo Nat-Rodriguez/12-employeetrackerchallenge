@@ -15,6 +15,7 @@ connection.connect(function(err) {
   startScreen();
 });
 
+
 function startScreen() {
   inquirer
     .prompt({
@@ -57,7 +58,19 @@ function startScreen() {
           updateEmployee();
           break;
         default:
-          quit();
+          quit();     
+        case "Update employee manager":
+          updateEmployeeManager();
+          break;
+        case "Delete department":
+          deleteDepartment();
+          break;
+        case "Delete role":
+          deleteRole();
+          break;
+        case "Delete employee":
+          deleteEmployee();
+          break;
       }
     });
 }
@@ -202,6 +215,93 @@ function viewEmployees() {
     startScreen();
   });
   // show the result to the user (console.table)
+}
+
+function updateEmployeeManager() {
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        message: "Enter the employee's first name to update their manager:",
+        name: "eeFirstName"
+      },
+      {
+        type: "input",
+        message: "Enter the new manager's ID:",
+        name: "newManagerID"
+      }
+    ])
+    .then(function(answer) {
+      connection.query(
+        "UPDATE employee SET manager_id = ? WHERE first_name = ?",
+        [answer.newManagerID, answer.eeFirstName],
+        function(err, res) {
+          if (err) throw err;
+          console.log("Employee manager updated successfully.");
+          startScreen();
+        }
+      );
+    });
+}
+
+function deleteDepartment() {
+  inquirer
+    .prompt({
+      type: "input",
+      message: "Enter the ID of the department you want to delete:",
+      name: "deptID"
+    })
+    .then(function(answer) {
+      connection.query(
+        "DELETE FROM department WHERE id = ?",
+        [answer.deptID],
+        function(err, res) {
+          if (err) throw err;
+          console.log("Department deleted successfully.");
+          startScreen();
+        }
+      );
+    });
+}
+
+function deleteRole() {
+  inquirer
+    .prompt({
+      type: "input",
+      message: "Enter the ID of the role you want to delete:",
+      name: "roleID"
+    })
+    .then(function(answer) {
+      connection.query(
+        "DELETE FROM role WHERE id = ?",
+        [answer.roleID],
+        function(err, res) {
+          if (err) throw err;
+          console.log("Role deleted successfully.");
+          startScreen();
+        }
+      );
+    });
+}
+
+function deleteEmployee() {
+  inquirer
+    .prompt({
+      type: "input",
+      message: "Enter the ID of the employee you want to delete:",
+      name: "employeeID"
+    })
+    .then(function(answer) {
+      connection.query(
+        "DELETE FROM employee WHERE id = ?",
+        [answer.employeeID],
+        function(err, res) {
+          if (err) throw err;
+          console.log("Employee deleted successfully.");
+          startScreen();
+        }
+      );
+    });
 }
 
 function quit() {
